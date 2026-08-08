@@ -14,7 +14,7 @@ no free turn handed to the wild mon while you stand there.
 * [Enemy HP Visible](https://github.com/ZyranCZ/Enemy-HP)
 * [Can Always Escape](https://github.com/ZyranCZ/Can-Always-Escape)
 
-* 
+
 ## Install
 
 Unzip the latest release into your game's `mods/` folder, press <kbd>F10</kbd>,
