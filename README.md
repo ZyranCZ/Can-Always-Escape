@@ -5,6 +5,7 @@ A mod for [gen1recomp](https://github.com/bryanthaboi/gen1recomp).
 RUN always works against a wild Pokémon. No escape roll, no failed attempt, and
 no free turn handed to the wild mon while you stand there.
 
+
 **Check out my other mods:**<br>
 * [Autofire A/B + Directional Keys Mod](https://github.com/ZyranCZ/autofire)<br>
 * [Steel and/or Fairy and/or Typing Charts](https://github.com/ZyranCZ/Steel-and-or-Fairy-and-or-Typing-Charts)<br>
@@ -16,6 +17,9 @@ no free turn handed to the wild mon while you stand there.
 * [Trainers Let You Choose Lead Pokemon](https://github.com/ZyranCZ/Trainers-Let-You-Choose-Lead-Pokemon)
 * [Evolve in Battle](https://github.com/ZyranCZ/Evolve-in-Battle)
 * [HELP Story Guide](https://github.com/ZyranCZ/HELP-Story-Guide/)
+* [Professor Oak's Pokémon DV/Stat Appraisal](https://github.com/ZyranCZ/Professor-Oak-DV-STAT-Evaluation)
+
+
 
 
 
