@@ -1,0 +1,17 @@
+{
+  "id": "always_escape",
+  "name": "Always Escape",
+  "version": "1.0.1",
+  "github": "ZyranCZ/Can-Always-Escape",
+  "api": 2,
+  "entry": "main.lua",
+  "profile": "content",
+  "category": "TWEAK",
+  "game_version": ">=0.0.0-0 <2.0.0",
+  "priority": 100,
+  "affects_link": false,
+  "dependencies": [],
+  "optional_dependencies": [],
+  "conflicts": [],
+  "description": "RUN always works against a wild Pokemon, with no failed roll and no lost turn. Trainer and link battles are untouched."
+}
