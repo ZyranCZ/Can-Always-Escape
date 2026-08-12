@@ -85,12 +85,35 @@ check("the disguised ghost is a wild battle and escapes",
 check("the unveiled marowak escapes like any wild mon",
       attempt(battle{ noCatch = true }), true)
 
+-- Gold uses a different battle-object shape.  The shared battle.run hook is
+-- still the seam, but Battle.new marks a wild fight with `wild = true` rather
+-- than the Gen 1 `kind = "wild"`.  Unknown shapes must fail closed.
+local function goldBattle(fields)
+  local b = { wild = true }
+  for k, v in pairs(fields or {}) do b[k] = v end
+  return b
+end
+
+check("a Gold-like ordinary wild escape succeeds", attempt(goldBattle()), true)
+check("and Gold-like success skips the vanilla roll", vanillaCalls, 0)
+check("a Gold-like trainer object still rolls",
+      attempt(goldBattle{ wild = false, trainer = { class = "TEST" } }), false)
+check("an unknown battle shape fails closed", attempt({}), false)
+
+-- Branch precedence is deliberate: if a future battle object exposes both
+-- shapes, the legacy Gen 1 classifier owns the answer so Red/Blue/Yellow
+-- semantics cannot drift accidentally.
+check("Gen 1 kind takes precedence over Gold-like fields",
+      attempt({ kind = "link", wild = true }), false)
+
 -- guards
 check("no battle in the context", attempt(nil), false)
 
 setOption("enabled", false)
 check("disabled mod defers to vanilla", attempt(battle()), false)
 check("and the vanilla roll ran", vanillaCalls, 1)
+check("disabled mod also defers on Gold-like wild", attempt(goldBattle()), false)
+check("and the Gold-like vanilla roll ran", vanillaCalls, 1)
 setOption("enabled", true)
 check("re-enabling restores the guarantee", attempt(battle()), true)
 
@@ -98,6 +121,10 @@ check("re-enabling restores the guarantee", attempt(battle()), true)
 check("guarantees() agrees for wild", mod.exports.guarantees(battle()), true)
 check("guarantees() refuses link",
       mod.exports.guarantees(battle{ kind = "link" }), false)
+check("guarantees() agrees for Gold-like wild",
+      mod.exports.guarantees(goldBattle()), true)
+check("guarantees() refuses unknown shape",
+      mod.exports.guarantees({}), false)
 
 print(failures == 0 and "\nall checks passed"
                     or ("\n" .. failures .. " check(s) failed"))

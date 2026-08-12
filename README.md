@@ -1,7 +1,7 @@
 # Always Escape
 
-RUN always works against a wild Pokémon, instead of rolling the Gen 1 escape
-formula and losing a turn on failure.
+RUN never randomly fails when the game has already decided that a normal wild
+escape attempt is allowed. The mod supports Pokémon Red, Blue, Yellow, and Gold.
 
 ## Try it
 
@@ -14,46 +14,39 @@ formula and losing a turn on failure.
 | --- | --- | --- |
 | `ALWAYS ESCAPE` | ON / OFF | ON |
 
-## What it covers
+## What it changes
 
-The `battle.run` hook is reached from one place, `BattleState:runRoll`, which
-is called from two: the RUN menu choice and the NO branch of the "Use next
-POKéMON?" prompt after a faint. Both are escape attempts, so guaranteeing the
-roll is the whole mod.
+In an ordinary wild battle, choosing **RUN** skips only the random escape-failure
+roll. If RUN is otherwise legal, the escape succeeds immediately and no turn is
+lost to a failed roll.
 
-## What it deliberately does not cover
+This does **not** mean that every battle can be escaped from. The mod leaves the
+game's native rules for whether RUN is allowed intact.
 
-**Trainer battles** never get that far — `tryRun` answers `_NoRunningText` and
-returns before rolling.
+- Trainer battles remain non-escapable.
+- Gen 1 link battles are untouched.
+- The Safari Zone and Old Man catching demo keep their own Gen 1 flows.
+- Pokémon Tower Marowak keeps the same Gen 1 behavior as before.
+- In Gold, special no-escape battles such as the Red Gyarados (`FORCESHINY`) and
+  Rocket trap battles (`TRAP`) remain blocked.
+- Mean Look / Spider Web and active Wrap trapping still prevent escape in Gold.
+- Roamer enemy-flee behavior is not changed; the mod affects only the player's
+  own legal RUN roll.
 
-**Link battles** do reach it. `LinkBattle` sets `kind = "link"`, which is not
-`"trainer"`, so the roll happens there in vanilla. Guaranteeing it would let a
-player walk out of a link battle at will, so the mod only ever answers for
-`kind == "wild"`.
-
-**The Safari Zone** has its own escape path that never touches `runRoll`, and
-**the old man's catching demo** drives its own menu. Neither reaches this hook
-today; both are excluded anyway, so a future change to either cannot quietly
-start routing through here.
-
-## About the Pokémon Tower Marowak
-
-The obvious thing to worry about, and it needs no protection.
-
-Without the Silph Scope it is a ghost battle, and `runRollVanilla` opens with
-`if self.ghost then return true end` — `IsGhostBattle` escapes unconditionally
-in vanilla, so the mod changes nothing. With the scope it is mechanically an
-ordinary wild battle that rolls for flight normally, so fleeing is already a
-legal outcome, and `POKEMON_TOWER_6F`'s `onFinish` handles it: any result other
-than a win or a loss steps the player one tile right, off the trigger, so the
-encounter does not immediately re-fire. The flag stays unset and the floor
-stays blocked until the fight is actually won.
-
-The only wild battles Gen 1 refuses to release you from are the ones this mod
-cannot reach in the first place.
+Turning `ALWAYS ESCAPE` **OFF** restores vanilla escape rolls.
 
 ## Tests
 
+From the Gen1Recomp repository root:
+
+```sh
+ALWAYS_ESCAPE_MAIN=mods/always_escape/main.lua luajit mods/always_escape/tests/always_escape_test.lua
 ```
-lua tests/always_escape_test.lua
+
+The package also includes `tests/always_escape_gold_integration_test.lua`, a
+ROM-free Gold battle-engine integration test intended to run with the current
+Gen1Recomp source tree:
+
+```sh
+luajit mods/always_escape/tests/always_escape_gold_integration_test.lua
 ```

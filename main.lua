@@ -1,14 +1,14 @@
--- Always Escape for Gen1Recomp
+-- Always Escape for Gen1Recomp (Gen 1 + Gold)
 --
--- RUN always works against a wild Pokémon, instead of rolling the Gen 1
--- escape formula and losing a turn on failure.
+-- RUN always works when the active game has already decided that a normal
+-- wild escape roll is legal. The mod changes only the random roll result; it
+-- never bypasses trainer, trapping, or special no-escape rules.
 --
 -- WHAT IS ACTUALLY AT RISK
 --
--- The battle.run hook is reached from exactly one place, BattleState:runRoll,
--- and that is called from two: the RUN menu choice (tryRun) and the NO
--- branch of the "Use next POKéMON?" prompt after a faint.  Both are escape
--- attempts, so guaranteeing the roll is the whole mod.
+-- On Gen 1, battle.run is reached through BattleState:runRoll; on Gold, the
+-- equivalent shared seam is Battle:runRoll.  In both engines the hook represents
+-- the random escape roll itself, so guaranteeing that result is the whole mod.
 --
 -- Trainer battles never get that far -- tryRun answers _NoRunningText and
 -- returns before rolling -- so they are safe without any help.  Link
@@ -59,9 +59,25 @@ return function(mod)
   -- Kept separate from the hook so a test can check the decision directly.
   local function guarantees(battle)
     if not enabled or not battle then return false end
-    if battle.kind ~= "wild" then return false end
-    if battle.safari or battle.demo then return false end
-    return true
+
+    -- Preserve the exact Gen 1 classifier first.  Gold's battle object does
+    -- not currently carry `kind`, but if a future engine revision adds a
+    -- similarly named field this branch order prevents it from changing the
+    -- Red/Blue/Yellow contract.
+    if battle.kind ~= nil then
+      if battle.kind ~= "wild" then return false end
+      if battle.safari or battle.demo then return false end
+      return true
+    end
+
+    -- Gold Battle.new exposes the battle shape directly: wild=true for wild
+    -- battles and trainer=nil.  Native Gold tryRun() performs battle-type,
+    -- trainer, Mean Look/Spider Web, and Wrap gates before it reaches the
+    -- shared battle.run hook, so this branch must not duplicate those rules.
+    if battle.wild == true and battle.trainer == nil then return true end
+
+    -- Unknown/future shapes fail closed.
+    return false
   end
 
   mod.hooks:wrap("battle.run", function(next, ctx)
