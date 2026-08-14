@@ -1,7 +1,7 @@
 {
   "id": "always_escape",
   "name": "Always Escape",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "github": "ZyranCZ/Can-Always-Escape",
   "api": 2,
   "entry": "main.lua",

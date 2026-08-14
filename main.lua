@@ -52,7 +52,7 @@ return function(mod)
 
   readOptions()
   mod.events:on("mod.options_changed", function(payload)
-    if payload and payload.mod == "always_escape" then readOptions() end
+    if payload and payload.mod == mod.id then readOptions() end
   end)
 
   -- Whether this particular escape attempt is one the mod may answer for.

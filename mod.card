@@ -1,0 +1,17 @@
+return {
+  summary = "Makes every otherwise-legal wild RUN attempt succeed.",
+  author = "ZyranCZ",
+  tags = { "quality-of-life", "battle", "gen1", "gen2" },
+  differences = {
+    changed = {
+      "Legal wild RUN attempts skip the random failure roll.",
+    },
+    added = {
+      "An ALWAYS ESCAPE toggle, enabled by default.",
+    },
+    known = {
+      "Trainer, link, Safari, demo, special no-escape, and trapping rules remain vanilla.",
+    },
+  },
+  compat = { modApi = 2 },
+}
